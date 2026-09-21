@@ -131,6 +131,7 @@ function initEventListeners() {
 
   // Edit Budget Modal Listeners
   document.getElementById('edit-budget-btn').addEventListener('click', openBudgetModal);
+  document.getElementById('budget-display').addEventListener('click', openBudgetModal);
   document.getElementById('close-budget-modal-btn').addEventListener('click', closeBudgetModal);
   document.getElementById('cancel-budget-modal-btn').addEventListener('click', closeBudgetModal);
   document.getElementById('budget-form').addEventListener('submit', handleBudgetSubmit);
@@ -544,7 +545,7 @@ function handleExpenseSubmit(e) {
   updateHashMapCategory(category, amount, 'add');
   maxHeap.insert(newExpense);
 
-  Visualizer.logArrayEvent(`Pushed <strong>${description}</strong> ($${amount}) into DynamicArray`, 'push');
+  Visualizer.logArrayEvent(`Pushed <strong>${description}</strong> (${formatINR(amount)}) into DynamicArray`, 'push');
 
   syncUI();
   saveToLocalStorage();
