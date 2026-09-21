@@ -86,7 +86,7 @@
               <span class="kpi-title">Total Spending</span>
               <div class="kpi-icon icon-purple"><i class="fa-solid fa-wallet"></i></div>
             </div>
-            <div class="kpi-value" id="total-spending">$0.00</div>
+            <div class="kpi-value" id="total-spending">₹0.00</div>
             <div class="kpi-footer">
               <span class="dsa-note"><i class="fa-solid fa-square-root-variable"></i> Dynamic Array Sum ($O(N)$)</span>
             </div>
@@ -97,7 +97,7 @@
               <span class="kpi-title">Monthly Budget</span>
               <button id="edit-budget-btn" class="btn-icon-small" title="Set Budget"><i class="fa-solid fa-gear"></i></button>
             </div>
-            <div class="kpi-value" id="budget-display">$2,500.00</div>
+            <div class="kpi-value" id="budget-display">₹50,000.00</div>
             <div class="budget-progress-bar">
               <div class="budget-fill" id="budget-fill-bar" style="width: 0%;"></div>
             </div>
@@ -111,7 +111,7 @@
               <span class="kpi-title">Top Expense (Heap Max)</span>
               <div class="kpi-icon icon-amber"><i class="fa-solid fa-crown"></i></div>
             </div>
-            <div class="kpi-value" id="top-expense-amount">$0.00</div>
+            <div class="kpi-value" id="top-expense-amount">₹0.00</div>
             <div class="kpi-footer" id="top-expense-title">
               <i class="fa-solid fa-diagram-project"></i> Peek Heap Root ($O(1)$)
             </div>
@@ -457,7 +457,7 @@ siftDown(i) {
 
         <div class="form-row">
           <div class="form-group">
-            <label for="expense-amount">Amount ($) *</label>
+            <label for="expense-amount">Amount (₹) *</label>
             <input type="number" step="0.01" min="0.01" id="expense-amount" class="form-input" placeholder="0.00" required>
           </div>
 
@@ -519,8 +519,8 @@ siftDown(i) {
       </div>
       <form id="budget-form">
         <div class="form-group">
-          <label for="budget-amount-input">Monthly Target Amount ($)</label>
-          <input type="number" step="10" min="1" id="budget-amount-input" class="form-input" placeholder="2500" required>
+          <label for="budget-amount-input">Monthly Target Amount (₹)</label>
+          <input type="number" step="500" min="1" id="budget-amount-input" class="form-input" placeholder="50000" required>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" id="cancel-budget-modal-btn">Cancel</button>

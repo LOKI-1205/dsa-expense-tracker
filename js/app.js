@@ -17,7 +17,14 @@ const maxHeap = new MaxHeap();
 // Global Charts
 let categoryChart = null;
 let trendChart = null;
-let monthlyBudget = 2500;
+let monthlyBudget = 50000;
+
+function formatINR(amount) {
+  return '₹' + parseFloat(amount).toLocaleString('en-IN', {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2
+  });
+}
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
@@ -160,6 +167,11 @@ function switchTab(tabId) {
  * Load Initial Data from LocalStorage or Load Demo Dataset
  */
 function loadStoredOrDemoData() {
+  const savedBudget = localStorage.getItem('trackpulse_budget');
+  if (savedBudget && !isNaN(parseFloat(savedBudget))) {
+    monthlyBudget = parseFloat(savedBudget);
+  }
+
   const savedData = localStorage.getItem('trackpulse_expenses');
   if (savedData) {
     try {
@@ -257,20 +269,20 @@ function updateKPICards() {
     total += transactionsArray.get(i).amount;
   }
 
-  document.getElementById('total-spending').innerText = `$${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  document.getElementById('total-spending').innerText = formatINR(total);
 
   // Monthly Budget Status
   const usedPercent = Math.min(100, Math.round((total / monthlyBudget) * 100));
   document.getElementById('budget-fill-bar').style.width = `${usedPercent}%`;
-  document.getElementById('budget-status-text').innerText = `${usedPercent}% of $${monthlyBudget.toLocaleString()} monthly budget used`;
+  document.getElementById('budget-status-text').innerText = `${usedPercent}% of ${formatINR(monthlyBudget)} monthly budget used`;
 
   // Top Expense (Max Heap Peek Root)
   const topExpense = maxHeap.peekMax();
   if (topExpense) {
-    document.getElementById('top-expense-amount').innerText = `$${topExpense.amount.toFixed(2)}`;
+    document.getElementById('top-expense-amount').innerText = formatINR(topExpense.amount);
     document.getElementById('top-expense-title').innerHTML = `<i class="fa-solid fa-crown" style="color:var(--accent-amber)"></i> ${topExpense.description}`;
   } else {
-    document.getElementById('top-expense-amount').innerText = '$0.00';
+    document.getElementById('top-expense-amount').innerText = '₹0.00';
     document.getElementById('top-expense-title').innerText = 'No expenses recorded';
   }
 
@@ -287,7 +299,7 @@ function updateKPICards() {
 
   document.getElementById('top-category-name').innerText = highestCat;
   document.getElementById('top-category-amount').innerText = highestAmount > 0 
-    ? `$${highestAmount.toFixed(2)} total spend` 
+    ? `${formatINR(highestAmount)} total spend` 
     : 'No categories recorded';
 }
 
@@ -314,7 +326,7 @@ function renderTopExpensesLeaderboard() {
           <div class="expense-name">${exp.description}</div>
           <div class="expense-sub">${exp.category} &bull; ${exp.date}</div>
         </div>
-        <div class="expense-val">$${exp.amount.toFixed(2)}</div>
+        <div class="expense-val">${formatINR(exp.amount)}</div>
       </div>
     `;
   });
@@ -365,7 +377,7 @@ function renderTable() {
             ${exp.notes ? `<div style="font-size:0.75rem; color:var(--text-muted);">${exp.notes}</div>` : ''}
           </td>
           <td><span class="badge dsa-tag">${exp.category}</span></td>
-          <td><strong style="color:var(--text-primary);">$${exp.amount.toFixed(2)}</strong></td>
+          <td><strong style="color:var(--text-primary);">${formatINR(exp.amount)}</strong></td>
           <td style="color:var(--text-secondary);">${exp.date}</td>
           <td><span class="priority-tag priority-${exp.priority}">${exp.priority}</span></td>
           <td>
@@ -461,7 +473,7 @@ function updateCharts() {
     data: {
       labels: sortedDates,
       datasets: [{
-        label: 'Daily Expense ($)',
+        label: 'Daily Expense (₹)',
         data: trendVals,
         backgroundColor: 'rgba(139, 92, 246, 0.65)',
         borderColor: '#8b5cf6',
@@ -560,7 +572,7 @@ function handleBudgetSubmit(e) {
     localStorage.setItem('trackpulse_budget', val.toString());
     updateKPICards();
     closeBudgetModal();
-    showToast(`Monthly budget updated to $${val.toLocaleString()}`, 'success');
+    showToast(`Monthly budget updated to ${formatINR(val)}`, 'success');
   }
 }
 
@@ -657,30 +669,30 @@ function loadDemoPreset(type) {
 
   if (type === 'cs-student') {
     demoData = [
-      { description: 'MacBook Pro M3 (CS Lab)', amount: 1899.00, category: 'Shopping & Tech', date: formatDate(1), priority: 'Essential', notes: '#laptop #coding' },
-      { description: 'University Tuition Fee', amount: 1250.00, category: 'Education & Books', date: formatDate(2), priority: 'Essential', notes: '#semester2' },
-      { description: 'AWS Cloud Credits & VPS', amount: 45.00, category: 'Shopping & Tech', date: formatDate(3), priority: 'Essential', notes: '#dsa #project' },
-      { description: 'Starbucks Study Espresso', amount: 8.50, category: 'Food & Dining', date: formatDate(4), priority: 'Discretionary', notes: '#latte' },
-      { description: 'Data Structures Textbook', amount: 89.99, category: 'Education & Books', date: formatDate(5), priority: 'Essential', notes: '#algorithms' },
-      { description: 'Dorm Room Rent', amount: 650.00, category: 'Housing & Rent', date: formatDate(7), priority: 'Essential', notes: '#monthly' },
-      { description: 'Mechanical Gaming Keyboard', amount: 120.00, category: 'Shopping & Tech', date: formatDate(8), priority: 'Discretionary', notes: '#keychron' },
-      { description: 'Campus Cafeteria Meal Pass', amount: 210.00, category: 'Food & Dining', date: formatDate(10), priority: 'Essential', notes: '#lunch' }
+      { description: 'MacBook Pro M3 (CS Lab)', amount: 149900.00, category: 'Shopping & Tech', date: formatDate(1), priority: 'Essential', notes: '#laptop #coding' },
+      { description: 'University Tuition Fee', amount: 45000.00, category: 'Education & Books', date: formatDate(2), priority: 'Essential', notes: '#semester2' },
+      { description: 'AWS Cloud Credits & VPS', amount: 3500.00, category: 'Shopping & Tech', date: formatDate(3), priority: 'Essential', notes: '#dsa #project' },
+      { description: 'Coffee & Snacks', amount: 350.00, category: 'Food & Dining', date: formatDate(4), priority: 'Discretionary', notes: '#cafe' },
+      { description: 'Data Structures Textbook', amount: 1200.00, category: 'Education & Books', date: formatDate(5), priority: 'Essential', notes: '#algorithms' },
+      { description: 'Hostel / Apartment Rent', amount: 12000.00, category: 'Housing & Rent', date: formatDate(7), priority: 'Essential', notes: '#monthly' },
+      { description: 'Mechanical Gaming Keyboard', amount: 4500.00, category: 'Shopping & Tech', date: formatDate(8), priority: 'Discretionary', notes: '#keychron' },
+      { description: 'Campus Mess & Cafeteria', amount: 3200.00, category: 'Food & Dining', date: formatDate(10), priority: 'Essential', notes: '#food' }
     ];
   } else if (type === 'freelancer') {
     demoData = [
-      { description: 'Client Dinner & Negotiation', amount: 245.50, category: 'Food & Dining', date: formatDate(1), priority: 'Essential', notes: '#client' },
-      { description: 'Ergonomic Standing Desk', amount: 599.00, category: 'Shopping & Tech', date: formatDate(3), priority: 'Investment', notes: '#office' },
-      { description: 'Fiber Gigabit Internet', amount: 89.00, category: 'Utilities & Bills', date: formatDate(5), priority: 'Essential', notes: '#wifi' },
-      { description: 'Figma & GitHub Enterprise', amount: 35.00, category: 'Shopping & Tech', date: formatDate(6), priority: 'Essential', notes: '#saas' },
-      { description: 'Co-Working Desk Pass', amount: 300.00, category: 'Housing & Rent', date: formatDate(8), priority: 'Essential', notes: '#wfh' }
+      { description: 'Client Dinner & Business Lunch', amount: 4800.00, category: 'Food & Dining', date: formatDate(1), priority: 'Essential', notes: '#client' },
+      { description: 'Ergonomic Office Chair & Desk', amount: 24000.00, category: 'Shopping & Tech', date: formatDate(3), priority: 'Investment', notes: '#office' },
+      { description: 'Fiber Broadband WiFi', amount: 1499.00, category: 'Utilities & Bills', date: formatDate(5), priority: 'Essential', notes: '#wifi' },
+      { description: 'Figma & GitHub Subscriptions', amount: 2500.00, category: 'Shopping & Tech', date: formatDate(6), priority: 'Essential', notes: '#saas' },
+      { description: 'Co-Working Space Pass', amount: 8000.00, category: 'Housing & Rent', date: formatDate(8), priority: 'Essential', notes: '#wfh' }
     ];
   } else if (type === 'vacation') {
     demoData = [
-      { description: 'Flight Ticket (Tokyo Haneda)', amount: 1350.00, category: 'Travel & Transit', date: formatDate(2), priority: 'Essential', notes: '#japan' },
-      { description: 'Shinjuku Hotel 5 Nights', amount: 920.00, category: 'Travel & Transit', date: formatDate(4), priority: 'Essential', notes: '#hotel' },
-      { description: 'JR Shinkansen Bullet Train Pass', amount: 350.00, category: 'Travel & Transit', date: formatDate(6), priority: 'Essential', notes: '#transit' },
-      { description: 'Akihabara Tech & Figure Shopping', amount: 480.00, category: 'Shopping & Tech', date: formatDate(7), priority: 'Discretionary', notes: '#anime' },
-      { description: 'Ginza Omakase Sushi Dinner', amount: 220.00, category: 'Food & Dining', date: formatDate(9), priority: 'Discretionary', notes: '#sushi' }
+      { description: 'Flight Ticket (Goa / Manali)', amount: 18500.00, category: 'Travel & Transit', date: formatDate(2), priority: 'Essential', notes: '#vacation' },
+      { description: 'Resort Stay 4 Nights', amount: 16000.00, category: 'Travel & Transit', date: formatDate(4), priority: 'Essential', notes: '#hotel' },
+      { description: 'Cab & Bike Rental', amount: 3500.00, category: 'Travel & Transit', date: formatDate(6), priority: 'Essential', notes: '#transit' },
+      { description: 'Shopping & Handicrafts', amount: 6500.00, category: 'Shopping & Tech', date: formatDate(7), priority: 'Discretionary', notes: '#souvenirs' },
+      { description: 'Seafood Special Dinner', amount: 3200.00, category: 'Food & Dining', date: formatDate(9), priority: 'Discretionary', notes: '#dinner' }
     ];
   }
 

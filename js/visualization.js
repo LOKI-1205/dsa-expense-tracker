@@ -110,7 +110,7 @@ const Visualizer = {
       ctx.font = 'bold 12px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(`$${Math.round(item.amount)}`, x, y - 2);
+      ctx.fillText(`₹${Math.round(item.amount)}`, x, y - 2);
 
       // Label below node
       ctx.fillStyle = '#94a3b8';
@@ -138,7 +138,7 @@ const Visualizer = {
       html += `
         <div class="heap-slot ${isRoot ? 'root-slot' : ''}">
           <div class="slot-idx">i=${idx}</div>
-          <div class="slot-val">$${parseFloat(item.amount).toFixed(0)}</div>
+          <div class="slot-val">₹${parseFloat(item.amount).toFixed(0)}</div>
           <div class="slot-key">${item.description}</div>
         </div>
       `;
@@ -178,7 +178,7 @@ const Visualizer = {
           html += `
             <div class="chain-item">
               <div class="chain-key">${key}</div>
-              <div class="chain-val">$${parseFloat(val.totalAmount).toFixed(2)} (${val.count} exp)</div>
+              <div class="chain-val">₹${parseFloat(val.totalAmount).toFixed(2)} (${val.count} exp)</div>
             </div>
           `;
         });
@@ -210,7 +210,7 @@ const Visualizer = {
       html += `
         <div class="mem-block ${isOccupied ? 'occupied' : 'empty'}">
           <span class="mem-idx">[${i}]</span>
-          <span class="mem-val">${isOccupied ? '$' + Math.round(item.amount) : '&empty;'}</span>
+          <span class="mem-val">${isOccupied ? '₹' + Math.round(item.amount) : '&empty;'}</span>
         </div>
       `;
     }
