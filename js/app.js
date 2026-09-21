@@ -520,7 +520,7 @@ function handleExpenseSubmit(e) {
   const priority = document.getElementById('expense-priority').value;
   const notes = document.getElementById('expense-notes').value.trim();
 
-  if (!description || isNaN(amount) || amount <= 0 || !date) {
+  if (!description || isNaN(amount) || !date) {
     showToast('Please fill in all required fields correctly.', 'warn');
     return;
   }
@@ -568,7 +568,7 @@ function closeBudgetModal() {
 function handleBudgetSubmit(e) {
   e.preventDefault();
   const val = parseFloat(document.getElementById('budget-amount-input').value);
-  if (!isNaN(val) && val > 0) {
+  if (!isNaN(val)) {
     monthlyBudget = val;
     localStorage.setItem('trackpulse_budget', val.toString());
     updateKPICards();
