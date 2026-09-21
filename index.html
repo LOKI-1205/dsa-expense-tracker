@@ -111,7 +111,7 @@
                 <i class="fa-solid fa-pen-to-square"></i> Set Budget
               </button>
             </div>
-            <div class="kpi-value" id="budget-display" style="cursor: pointer;" title="Click to change monthly budget">₹50,000.00</div>
+            <div class="kpi-value" id="budget-display" style="cursor: pointer;" title="Click to change monthly budget">₹0.00</div>
             <div class="budget-progress-bar">
               <div class="budget-fill" id="budget-fill-bar" style="width: 0%;"></div>
             </div>
@@ -534,7 +534,7 @@ siftDown(i) {
       <form id="budget-form" novalidate>
         <div class="form-group">
           <label for="budget-amount-input">Monthly Target Amount (₹)</label>
-          <input type="text" inputmode="decimal" id="budget-amount-input" class="form-input" placeholder="Enter any budget target..." required>
+          <input type="text" inputmode="decimal" id="budget-amount-input" class="form-input" placeholder="e.g. 20000, 35000" required>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" id="cancel-budget-modal-btn">Cancel</button>

@@ -169,7 +169,7 @@ function switchTab(tabId) {
  */
 function loadStoredOrDemoData() {
   const savedBudget = localStorage.getItem('trackpulse_budget');
-  if (savedBudget && !isNaN(parseFloat(savedBudget))) {
+  if (savedBudget !== null && !isNaN(parseFloat(savedBudget))) {
     monthlyBudget = parseFloat(savedBudget);
   } else {
     monthlyBudget = 0;
@@ -573,7 +573,8 @@ function handleExpenseSubmit(e) {
  */
 function openBudgetModal() {
   document.getElementById('budget-modal').classList.remove('hidden');
-  document.getElementById('budget-amount-input').value = monthlyBudget;
+  document.getElementById('budget-amount-input').value = monthlyBudget > 0 ? monthlyBudget : '';
+  setTimeout(() => document.getElementById('budget-amount-input').focus(), 100);
 }
 
 function closeBudgetModal() {
@@ -584,12 +585,14 @@ function handleBudgetSubmit(e) {
   e.preventDefault();
   const budgetRaw = document.getElementById('budget-amount-input').value.replace(/,/g, '').trim();
   const val = parseFloat(budgetRaw);
-  if (!isNaN(val)) {
+  if (!isNaN(val) && val >= 0) {
     monthlyBudget = val;
     localStorage.setItem('trackpulse_budget', val.toString());
     updateKPICards();
     closeBudgetModal();
     showToast(`Monthly budget updated to ${formatINR(val)}`, 'success');
+  } else {
+    showToast('Please enter a valid numeric budget amount.', 'warn');
   }
 }
 
