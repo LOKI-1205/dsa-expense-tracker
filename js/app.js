@@ -130,11 +130,20 @@ function initEventListeners() {
   });
 
   // Edit Budget Modal Listeners
-  document.getElementById('edit-budget-btn').addEventListener('click', openBudgetModal);
-  document.getElementById('budget-display').addEventListener('click', openBudgetModal);
-  document.getElementById('close-budget-modal-btn').addEventListener('click', closeBudgetModal);
-  document.getElementById('cancel-budget-modal-btn').addEventListener('click', closeBudgetModal);
-  document.getElementById('budget-form').addEventListener('submit', handleBudgetSubmit);
+  const editBudgetBtn = document.getElementById('edit-budget-btn');
+  if (editBudgetBtn) editBudgetBtn.addEventListener('click', openBudgetModal);
+  const budgetDisplay = document.getElementById('budget-display');
+  if (budgetDisplay) budgetDisplay.addEventListener('click', openBudgetModal);
+  
+  const closeBudgetBtn = document.getElementById('close-budget-modal-btn');
+  if (closeBudgetBtn) closeBudgetBtn.addEventListener('click', closeBudgetModal);
+  const cancelBudgetBtn = document.getElementById('cancel-budget-modal-btn');
+  if (cancelBudgetBtn) cancelBudgetBtn.addEventListener('click', closeBudgetModal);
+
+  const budgetForm = document.getElementById('budget-form');
+  if (budgetForm) budgetForm.addEventListener('submit', handleBudgetSubmit);
+  const saveBudgetBtn = document.getElementById('save-budget-btn');
+  if (saveBudgetBtn) saveBudgetBtn.addEventListener('click', handleBudgetSubmit);
 
   // Clear All Data
   const clearBtn = document.getElementById('clear-all-data-btn');
@@ -572,22 +581,38 @@ function handleExpenseSubmit(e) {
  * Budget Modal Handlers
  */
 function openBudgetModal() {
-  document.getElementById('budget-modal').classList.remove('hidden');
-  document.getElementById('budget-amount-input').value = monthlyBudget > 0 ? monthlyBudget : '';
-  setTimeout(() => document.getElementById('budget-amount-input').focus(), 100);
+  const modal = document.getElementById('budget-modal');
+  if (modal) modal.classList.remove('hidden');
+  const input = document.getElementById('budget-amount-input');
+  if (input) {
+    input.value = monthlyBudget > 0 ? monthlyBudget : '';
+    setTimeout(() => input.focus(), 100);
+  }
 }
 
 function closeBudgetModal() {
-  document.getElementById('budget-modal').classList.add('hidden');
+  const modal = document.getElementById('budget-modal');
+  if (modal) modal.classList.add('hidden');
 }
 
 function handleBudgetSubmit(e) {
-  e.preventDefault();
-  const budgetRaw = document.getElementById('budget-amount-input').value.replace(/,/g, '').trim();
+  if (e) e.preventDefault();
+  const input = document.getElementById('budget-amount-input');
+  if (!input) return;
+  
+  const budgetRaw = input.value.replace(/,/g, '').trim();
   const val = parseFloat(budgetRaw);
+
   if (!isNaN(val) && val >= 0) {
     monthlyBudget = val;
     localStorage.setItem('trackpulse_budget', val.toString());
+
+    // Instant direct DOM update
+    const displayEl = document.getElementById('budget-display');
+    if (displayEl) {
+      displayEl.innerText = formatINR(val);
+    }
+
     updateKPICards();
     closeBudgetModal();
     showToast(`Monthly budget updated to ${formatINR(val)}`, 'success');
