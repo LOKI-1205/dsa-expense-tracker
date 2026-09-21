@@ -79,6 +79,18 @@
       <!-- TAB 1: DASHBOARD & ANALYTICS -->
       <!-- ========================================== -->
       <section id="dashboard" class="tab-content active">
+        <!-- Quick Manual Setup Banner -->
+        <div id="manual-welcome-banner" class="inspector-banner glass" style="margin-bottom: 1.25rem; padding: 1.2rem 1.5rem;">
+          <div class="banner-text">
+            <h2><i class="fa-solid fa-calculator" style="color:var(--accent-purple)"></i> Personal Manual Tracker</h2>
+            <p>Step 1: Set your Monthly Budget &bull; Step 2: Add your personal expenses &bull; Step 3: Track live data!</p>
+          </div>
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="openBudgetModal()"><i class="fa-solid fa-pen-to-square"></i> Set Monthly Budget</button>
+            <button class="btn btn-primary" onclick="openExpenseModal()"><i class="fa-solid fa-plus"></i> Add Expense</button>
+          </div>
+        </div>
+
         <!-- KPI Cards Grid -->
         <div class="kpi-grid">
           <div class="kpi-card glass">

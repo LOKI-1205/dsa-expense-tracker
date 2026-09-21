@@ -171,6 +171,8 @@ function loadStoredOrDemoData() {
   const savedBudget = localStorage.getItem('trackpulse_budget');
   if (savedBudget && !isNaN(parseFloat(savedBudget))) {
     monthlyBudget = parseFloat(savedBudget);
+  } else {
+    monthlyBudget = 0;
   }
 
   const savedData = localStorage.getItem('trackpulse_expenses');
@@ -179,10 +181,15 @@ function loadStoredOrDemoData() {
       const expenses = JSON.parse(savedData);
       populateDataStructures(expenses);
     } catch (e) {
-      loadDemoPreset('cs-student');
+      populateDataStructures([]);
     }
   } else {
-    loadDemoPreset('cs-student');
+    // 100% Manual Personal Tracker Startup
+    populateDataStructures([]);
+    setTimeout(() => {
+      openBudgetModal();
+      showToast('Welcome! Please set your Monthly Budget to start tracking expenses.', 'info');
+    }, 400);
   }
 }
 
@@ -273,9 +280,16 @@ function updateKPICards() {
   document.getElementById('total-spending').innerText = formatINR(total);
 
   // Monthly Budget Status
-  const usedPercent = Math.min(100, Math.round((total / monthlyBudget) * 100));
-  document.getElementById('budget-fill-bar').style.width = `${usedPercent}%`;
-  document.getElementById('budget-status-text').innerText = `${usedPercent}% of ${formatINR(monthlyBudget)} monthly budget used`;
+  if (monthlyBudget > 0) {
+    document.getElementById('budget-display').innerText = formatINR(monthlyBudget);
+    const usedPercent = Math.min(100, Math.round((total / monthlyBudget) * 100));
+    document.getElementById('budget-fill-bar').style.width = `${usedPercent}%`;
+    document.getElementById('budget-status-text').innerText = `${usedPercent}% of ${formatINR(monthlyBudget)} monthly budget used`;
+  } else {
+    document.getElementById('budget-display').innerText = 'Set Budget ⚙️';
+    document.getElementById('budget-fill-bar').style.width = '0%';
+    document.getElementById('budget-status-text').innerText = 'Click "Set Monthly Budget" to define budget';
+  }
 
   // Top Expense (Max Heap Peek Root)
   const topExpense = maxHeap.peekMax();
