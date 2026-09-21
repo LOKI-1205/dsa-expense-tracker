@@ -10,7 +10,12 @@ import os
 import sys
 import json
 from http.server import SimpleHTTPRequestHandler, HTTPServer
-from python.dsa import DynamicArray, CustomHashMap, MaxHeap
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, PROJECT_ROOT)
+
+from dsa import DynamicArray, CustomHashMap, MaxHeap
 
 PORT = 8000
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -57,11 +62,11 @@ def run_python_web_server():
     os.chdir(PROJECT_ROOT)
     server_address = ('', PORT)
     httpd = HTTPServer(server_address, TrackPulseHTTPRequestHandler)
-    print(f"=========================================================================")
-    print(f"🚀 TrackPulse Python Web Application Server Running at http://localhost:{PORT}")
-    print(f"=========================================================================")
-    print(f"📁 Serving static files & Python DSA Engine from: {PROJECT_ROOT}")
-    print(f"Press Ctrl+C to stop server.\n")
+    print("=========================================================================")
+    print(f"TrackPulse Python Web Application Server Running at http://localhost:{PORT}")
+    print("=========================================================================")
+    print(f"Serving static files & Python DSA Engine from: {PROJECT_ROOT}")
+    print("Press Ctrl+C to stop server.\n")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
