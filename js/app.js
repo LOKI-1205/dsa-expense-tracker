@@ -107,6 +107,37 @@ function initEventListeners() {
     Visualizer.renderHeapArrayStorage(maxHeap);
     showToast('Heapify triggered! Binary Max-Heap rebuilt in O(N) time.', 'info');
   });
+
+  // Custom Category Toggle
+  const catSelect = document.getElementById('expense-category');
+  const customCatInput = document.getElementById('custom-category-input');
+  catSelect.addEventListener('change', () => {
+    if (catSelect.value === 'CUSTOM') {
+      customCatInput.classList.remove('hidden');
+      customCatInput.required = true;
+      customCatInput.focus();
+    } else {
+      customCatInput.classList.add('hidden');
+      customCatInput.required = false;
+    }
+  });
+
+  // Edit Budget Modal Listeners
+  document.getElementById('edit-budget-btn').addEventListener('click', openBudgetModal);
+  document.getElementById('close-budget-modal-btn').addEventListener('click', closeBudgetModal);
+  document.getElementById('cancel-budget-modal-btn').addEventListener('click', closeBudgetModal);
+  document.getElementById('budget-form').addEventListener('submit', handleBudgetSubmit);
+
+  // Clear All Data
+  const clearBtn = document.getElementById('clear-all-data-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all expense records? This allows you to start fresh for personal use.')) {
+        populateDataStructures([]);
+        showToast('All records cleared. You can now manually enter your personal expenses.', 'info');
+      }
+    });
+  }
 }
 
 /**
@@ -461,7 +492,17 @@ function handleExpenseSubmit(e) {
   const id = document.getElementById('expense-id').value;
   const description = document.getElementById('expense-desc').value.trim();
   const amount = parseFloat(document.getElementById('expense-amount').value);
-  const category = document.getElementById('expense-category').value;
+  let category = document.getElementById('expense-category').value;
+  
+  if (category === 'CUSTOM') {
+    const customVal = document.getElementById('custom-category-input').value.trim();
+    if (!customVal) {
+      showToast('Please type your custom category name.', 'warn');
+      return;
+    }
+    category = '🏷️ ' + customVal;
+  }
+
   const date = document.getElementById('expense-date').value;
   const priority = document.getElementById('expense-priority').value;
   const notes = document.getElementById('expense-notes').value.trim();
@@ -497,6 +538,30 @@ function handleExpenseSubmit(e) {
   saveToLocalStorage();
   closeExpenseModal();
   showToast(`Expense "${description}" saved successfully!`, 'success');
+}
+
+/**
+ * Budget Modal Handlers
+ */
+function openBudgetModal() {
+  document.getElementById('budget-modal').classList.remove('hidden');
+  document.getElementById('budget-amount-input').value = monthlyBudget;
+}
+
+function closeBudgetModal() {
+  document.getElementById('budget-modal').classList.add('hidden');
+}
+
+function handleBudgetSubmit(e) {
+  e.preventDefault();
+  const val = parseFloat(document.getElementById('budget-amount-input').value);
+  if (!isNaN(val) && val > 0) {
+    monthlyBudget = val;
+    localStorage.setItem('trackpulse_budget', val.toString());
+    updateKPICards();
+    closeBudgetModal();
+    showToast(`Monthly budget updated to $${val.toLocaleString()}`, 'success');
+  }
 }
 
 /**
@@ -572,6 +637,8 @@ function closeExpenseModal() {
   document.getElementById('expense-modal').classList.add('hidden');
   document.getElementById('expense-form').reset();
   document.getElementById('expense-id').value = '';
+  document.getElementById('custom-category-input').classList.add('hidden');
+  document.getElementById('custom-category-input').required = false;
   document.getElementById('modal-title').innerText = 'Add New Expense';
 }
 

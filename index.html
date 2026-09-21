@@ -62,6 +62,8 @@
             <button data-demo="cs-student"><i class="fa-solid fa-graduation-cap"></i> CS Student Life</button>
             <button data-demo="freelancer"><i class="fa-solid fa-laptop-code"></i> Tech Freelancer</button>
             <button data-demo="vacation"><i class="fa-solid fa-plane-departure"></i> Japan Vacation</button>
+            <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 0.2rem 0;">
+            <button id="clear-all-data-btn" style="color: var(--accent-rose);"><i class="fa-solid fa-trash-can"></i> Clear All Data</button>
           </div>
         </div>
         <button id="theme-toggle-btn" class="icon-btn" title="Toggle Theme">
@@ -93,7 +95,7 @@
           <div class="kpi-card glass">
             <div class="kpi-header">
               <span class="kpi-title">Monthly Budget</span>
-              <div class="kpi-icon icon-blue"><i class="fa-solid fa-piggy-bank"></i></div>
+              <button id="edit-budget-btn" class="btn-icon-small" title="Set Budget"><i class="fa-solid fa-gear"></i></button>
             </div>
             <div class="kpi-value" id="budget-display">$2,500.00</div>
             <div class="budget-progress-bar">
@@ -471,7 +473,9 @@ siftDown(i) {
               <option value="Education & Books">📚 Education & Books</option>
               <option value="Health & Fitness">💊 Health & Fitness</option>
               <option value="Other">🏷️ Other</option>
+              <option value="CUSTOM">➕ Add Custom Category...</option>
             </select>
+            <input type="text" id="custom-category-input" class="form-input hidden" style="margin-top:0.4rem;" placeholder="Type custom category name...">
           </div>
         </div>
 
@@ -500,6 +504,28 @@ siftDown(i) {
           <button type="button" class="btn btn-secondary" id="cancel-modal-btn">Cancel</button>
           <button type="submit" class="btn btn-primary" id="save-expense-btn">
             <i class="fa-solid fa-floppy-disk"></i> Save Expense
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Budget Modal -->
+  <div id="budget-modal" class="modal-overlay hidden">
+    <div class="modal-card glass" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-piggy-bank"></i> Set Monthly Budget</h2>
+        <button class="modal-close-btn" id="close-budget-modal-btn">&times;</button>
+      </div>
+      <form id="budget-form">
+        <div class="form-group">
+          <label for="budget-amount-input">Monthly Target Amount ($)</label>
+          <input type="number" step="10" min="1" id="budget-amount-input" class="form-input" placeholder="2500" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancel-budget-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Save Budget
           </button>
         </div>
       </form>
