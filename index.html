@@ -449,18 +449,18 @@ siftDown(i) {
         <h2 id="modal-title"><i class="fa-solid fa-plus-circle"></i> Add New Expense</h2>
         <button class="modal-close-btn" id="close-modal-btn">&times;</button>
       </div>
-      <form id="expense-form">
+      <form id="expense-form" novalidate>
         <input type="hidden" id="expense-id">
         
         <div class="form-group">
           <label for="expense-desc">Description / Title *</label>
-          <input type="text" id="expense-desc" class="form-input" placeholder="e.g. Grocery Shopping, AWS Subscription" required>
+          <input type="text" id="expense-desc" class="form-input" placeholder="e.g. Grocery Shopping, Rent, Bill" required>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="expense-amount">Amount (₹) *</label>
-            <input type="number" step="any" id="expense-amount" class="form-input" placeholder="Enter amount..." required>
+            <input type="text" inputmode="decimal" id="expense-amount" class="form-input" placeholder="Enter any amount (e.g. 19500, 250.50)" required>
           </div>
 
           <div class="form-group">
@@ -519,10 +519,10 @@ siftDown(i) {
         <h2><i class="fa-solid fa-piggy-bank"></i> Set Monthly Budget</h2>
         <button class="modal-close-btn" id="close-budget-modal-btn">&times;</button>
       </div>
-      <form id="budget-form">
+      <form id="budget-form" novalidate>
         <div class="form-group">
           <label for="budget-amount-input">Monthly Target Amount (₹)</label>
-          <input type="number" step="any" id="budget-amount-input" class="form-input" placeholder="Enter budget target..." required>
+          <input type="text" inputmode="decimal" id="budget-amount-input" class="form-input" placeholder="Enter any budget target..." required>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" id="cancel-budget-modal-btn">Cancel</button>

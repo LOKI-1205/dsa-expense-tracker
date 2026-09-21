@@ -504,7 +504,8 @@ function handleExpenseSubmit(e) {
 
   const id = document.getElementById('expense-id').value;
   const description = document.getElementById('expense-desc').value.trim();
-  const amount = parseFloat(document.getElementById('expense-amount').value);
+  const amountRaw = document.getElementById('expense-amount').value.replace(/,/g, '').trim();
+  const amount = parseFloat(amountRaw);
   let category = document.getElementById('expense-category').value;
   
   if (category === 'CUSTOM') {
@@ -567,7 +568,8 @@ function closeBudgetModal() {
 
 function handleBudgetSubmit(e) {
   e.preventDefault();
-  const val = parseFloat(document.getElementById('budget-amount-input').value);
+  const budgetRaw = document.getElementById('budget-amount-input').value.replace(/,/g, '').trim();
+  const val = parseFloat(budgetRaw);
   if (!isNaN(val)) {
     monthlyBudget = val;
     localStorage.setItem('trackpulse_budget', val.toString());
