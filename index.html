@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Expense Tracker & DSA Analytics</title>
+  <meta name="description" content="A modern personal expense tracker powered by Data Structures & Algorithms: Hash Maps, Dynamic Arrays, and Binary Max-Heaps.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="logo-icon">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="brand-text">
+          <h1>TrackPulse <span class="badge dsa-tag">DSA Engine</span></h1>
+          <p class="subtitle">Expense Tracker & Data Structure Inspector</p>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-btn active" data-tab="dashboard">
+          <i class="fa-solid fa-house-chimney"></i> Dashboard
+        </button>
+        <button class="nav-btn" data-tab="transactions">
+          <i class="fa-solid fa-list-check"></i> Transactions
+        </button>
+        <button class="nav-btn highlight-tab" data-tab="dsa-inspector">
+          <i class="fa-solid fa-microscope"></i> DSA Inspector
+        </button>
+        <button class="nav-btn" data-tab="dsa-theory">
+          <i class="fa-solid fa-book-bookmark"></i> DSA Theory
+        </button>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="add-expense-quick-btn" class="btn btn-primary">
+          <i class="fa-solid fa-plus"></i> Add Expense
+        </button>
+        <div class="dropdown-wrapper">
+          <button id="demo-data-btn" class="btn btn-secondary">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Load Demo Data
+          </button>
+          <div class="dropdown-menu" id="demo-menu">
+            <button data-demo="cs-student"><i class="fa-solid fa-graduation-cap"></i> CS Student Life</button>
+            <button data-demo="freelancer"><i class="fa-solid fa-laptop-code"></i> Tech Freelancer</button>
+            <button data-demo="vacation"><i class="fa-solid fa-plane-departure"></i> Japan Vacation</button>
+          </div>
+        </div>
+        <button id="theme-toggle-btn" class="icon-btn" title="Toggle Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="content">
+
+      <!-- ========================================== -->
+      <!-- TAB 1: DASHBOARD & ANALYTICS -->
+      <!-- ========================================== -->
+      <section id="dashboard" class="tab-content active">
+        <!-- KPI Cards Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card glass">
+            <div class="kpi-header">
+              <span class="kpi-title">Total Spending</span>
+              <div class="kpi-icon icon-purple"><i class="fa-solid fa-wallet"></i></div>
+            </div>
+            <div class="kpi-value" id="total-spending">$0.00</div>
+            <div class="kpi-footer">
+              <span class="dsa-note"><i class="fa-solid fa-square-root-variable"></i> Dynamic Array Sum ($O(N)$)</span>
+            </div>
+          </div>
+
+          <div class="kpi-card glass">
+            <div class="kpi-header">
+              <span class="kpi-title">Monthly Budget</span>
+              <div class="kpi-icon icon-blue"><i class="fa-solid fa-piggy-bank"></i></div>
+            </div>
+            <div class="kpi-value" id="budget-display">$2,500.00</div>
+            <div class="budget-progress-bar">
+              <div class="budget-fill" id="budget-fill-bar" style="width: 0%;"></div>
+            </div>
+            <div class="kpi-footer" id="budget-status-text">
+              0% of monthly budget used
+            </div>
+          </div>
+
+          <div class="kpi-card glass highlight-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Top Expense (Heap Max)</span>
+              <div class="kpi-icon icon-amber"><i class="fa-solid fa-crown"></i></div>
+            </div>
+            <div class="kpi-value" id="top-expense-amount">$0.00</div>
+            <div class="kpi-footer" id="top-expense-title">
+              <i class="fa-solid fa-diagram-project"></i> Peek Heap Root ($O(1)$)
+            </div>
+          </div>
+
+          <div class="kpi-card glass">
+            <div class="kpi-header">
+              <span class="kpi-title">Top Spending Category</span>
+              <div class="kpi-icon icon-emerald"><i class="fa-solid fa-chart-pie"></i></div>
+            </div>
+            <div class="kpi-value" id="top-category-name">None</div>
+            <div class="kpi-footer" id="top-category-amount">
+              <i class="fa-solid fa-hashtag"></i> Hash Map Aggregation ($O(1)$ lookup)
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts and Top Expenses Section -->
+        <div class="dashboard-grid">
+          <!-- Category Breakdown Chart (Hash Map Aggregated) -->
+          <div class="card glass chart-card">
+            <div class="card-header">
+              <div>
+                <h2>Category Analytics</h2>
+                <p class="subtitle">Aggregated via Custom Hash Map key-value buckets</p>
+              </div>
+              <span class="badge dsa-badge"><i class="fa-solid fa-hashtag"></i> Hash Map</span>
+            </div>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Top Expenses Leaderboard (Max Heap Powered) -->
+          <div class="card glass leaderboard-card">
+            <div class="card-header">
+              <div>
+                <h2>Top Expenses</h2>
+                <p class="subtitle">Extracted live from Binary Max-Heap</p>
+              </div>
+              <span class="badge dsa-badge-amber"><i class="fa-solid fa-sitemap"></i> Max-Heap ($O(N \log K)$)</span>
+            </div>
+
+            <div class="heap-controls">
+              <label for="top-k-select">Show Top:</label>
+              <select id="top-k-select" class="select-input">
+                <option value="3">Top 3 Expenses</option>
+                <option value="5" selected>Top 5 Expenses</option>
+                <option value="10">Top 10 Expenses</option>
+              </select>
+            </div>
+
+            <div class="top-expenses-list" id="top-expenses-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Spending Trend Chart -->
+        <div class="card glass full-width-card">
+          <div class="card-header">
+            <div>
+              <h2>Recent Transaction Stream</h2>
+              <p class="subtitle">Sequential temporal list powered by Dynamic Array ($O(1)$ push)</p>
+            </div>
+            <span class="badge dsa-badge-blue"><i class="fa-solid fa-layer-group"></i> Dynamic Array</span>
+          </div>
+          <div class="chart-container-large">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: TRANSACTIONS MANAGEMENT -->
+      <!-- ========================================== -->
+      <section id="transactions" class="tab-content">
+        <div class="card glass">
+          <div class="card-header">
+            <div>
+              <h2>All Transactions</h2>
+              <p class="subtitle">Stored in sequence using custom Dynamic Array buffer</p>
+            </div>
+            <div class="table-actions">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="Search by description, tag...">
+              </div>
+              <select id="category-filter" class="select-input">
+                <option value="ALL">All Categories</option>
+                <!-- Populated dynamically -->
+              </select>
+              <select id="sort-select" class="select-input">
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="amount-desc">Amount: High to Low</option>
+                <option value="amount-asc">Amount: Low to High</option>
+              </select>
+              <button id="export-csv-btn" class="btn btn-secondary">
+                <i class="fa-solid fa-file-export"></i> Export CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Transaction Table -->
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th># (Index)</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Priority Tag</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="transaction-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+            <div id="empty-state" class="empty-state hidden">
+              <i class="fa-solid fa-receipt"></i>
+              <h3>No transactions found</h3>
+              <p>Add your first expense or load demo data to view analytics.</p>
+            </div>
+          </div>
+          <div class="table-footer">
+            <span id="array-stats-summary">Dynamic Array Size: 0 | Capacity: 8</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 3: DSA DATA STRUCTURE INSPECTOR -->
+      <!-- ========================================== -->
+      <section id="dsa-inspector" class="tab-content">
+        <div class="inspector-banner glass">
+          <div class="banner-text">
+            <h2><i class="fa-solid fa-flask"></i> Interactive Data Structure Inspector</h2>
+            <p>Inspect under-the-hood memory layouts, hash buckets, binary heap trees, and dynamic buffer allocations in real time as you add or delete expenses!</p>
+          </div>
+          <div class="inspector-mode-selector">
+            <button class="subtab-btn active" data-inspector="heap-view">
+              <i class="fa-solid fa-sitemap"></i> Max-Heap Tree
+            </button>
+            <button class="subtab-btn" data-inspector="hashmap-view">
+              <i class="fa-solid fa-hashtag"></i> Hash Map Buckets
+            </button>
+            <button class="subtab-btn" data-inspector="array-view">
+              <i class="fa-solid fa-memory"></i> Dynamic Array Allocation
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub-View 1: Max Heap Tree Visualizer -->
+        <div id="heap-view" class="inspector-subtab active">
+          <div class="card glass">
+            <div class="card-header">
+              <div>
+                <h2>Binary Max-Heap Tree Visualizer</h2>
+                <p class="subtitle">Node property: <code>Parent.amount &ge; Child.amount</code> | Index formula: Left=<code>2i+1</code>, Right=<code>2i+2</code>, Parent=<code>&lfloor;(i-1)/2&rfloor;</code></p>
+              </div>
+              <div class="dsa-controls">
+                <button id="rebuild-heap-btn" class="btn btn-secondary">
+                  <i class="fa-solid fa-rotate"></i> Trigger Heapify ($O(N)$)
+                </button>
+              </div>
+            </div>
+
+            <div class="heap-canvas-container">
+              <canvas id="heapCanvas" width="900" height="420"></canvas>
+            </div>
+
+            <div class="heap-array-representation">
+              <h3>Array Backing Storage for Heap:</h3>
+              <div class="array-slots-flex" id="heap-array-slots">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-View 2: Hash Map Bucket Inspector -->
+        <div id="hashmap-view" class="inspector-subtab">
+          <div class="card glass">
+            <div class="card-header">
+              <div>
+                <h2>Hash Map Bucket & Collision Inspector</h2>
+                <p class="subtitle">Hash Function: <code>DJB2 String Hash & mod Capacity</code> with Separate Chaining Linked Buckets</p>
+              </div>
+              <div class="hash-stats">
+                <span class="stat-pill" id="hashmap-size-pill">Keys: 0</span>
+                <span class="stat-pill" id="hashmap-buckets-pill">Buckets: 8</span>
+                <span class="stat-pill" id="hashmap-load-pill">Load Factor: 0.00</span>
+              </div>
+            </div>
+
+            <div class="buckets-grid" id="buckets-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-View 3: Dynamic Array Memory Allocator -->
+        <div id="array-view" class="inspector-subtab">
+          <div class="card glass">
+            <div class="card-header">
+              <div>
+                <h2>Dynamic Array Buffer & Capacity Monitor</h2>
+                <p class="subtitle">Amortized $O(1)$ Insertion | Automatic $2\times$ Resizing Strategy when Size equals Capacity</p>
+              </div>
+              <div class="array-metric-group">
+                <span class="metric-tag">Size: <strong id="dynamic-size-val">0</strong></span>
+                <span class="metric-tag">Capacity: <strong id="dynamic-cap-val">8</strong></span>
+                <span class="metric-tag">Memory Load: <strong id="dynamic-load-val">0%</strong></span>
+              </div>
+            </div>
+
+            <div class="memory-blocks-wrapper">
+              <div class="memory-grid" id="array-memory-grid">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+
+            <div class="resizing-log-box">
+              <h3><i class="fa-solid fa-terminal"></i> Resizing Event Log</h3>
+              <div class="log-console" id="array-log-console">
+                <div class="log-entry system">[SYSTEM] DynamicArray initialized with initial capacity 8.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 4: DSA THEORY & ACADEMIC EXPLANATION -->
+      <!-- ========================================== -->
+      <section id="dsa-theory" class="tab-content">
+        <div class="theory-grid">
+          
+          <!-- Hash Map Card -->
+          <div class="card glass theory-card">
+            <div class="theory-icon icon-emerald"><i class="fa-solid fa-hashtag"></i></div>
+            <h2>1. Hash Map Structure</h2>
+            <p class="theory-desc">Used for instant $O(1)$ category expense aggregation and budget lookup.</p>
+            
+            <div class="complexity-table">
+              <div class="c-row"><span>Operation</span><span>Average</span><span>Worst Case</span></div>
+              <div class="c-row"><span>Lookup / Get</span><span class="green">O(1)</span><span class="amber">O(N)</span></div>
+              <div class="c-row"><span>Insertion</span><span class="green">O(1)</span><span class="amber">O(N)</span></div>
+              <div class="c-row"><span>Deletion</span><span class="green">O(1)</span><span class="amber">O(N)</span></div>
+              <div class="c-row"><span>Space</span><span class="blue">O(K)</span><span>K = Categories</span></div>
+            </div>
+
+            <div class="code-snippet">
+<pre><code>// DJB2 Hash Algorithm Implementation
+hash(key) {
+  let hash = 5381;
+  for (let i = 0; i &lt; key.length; i++) {
+    hash = (hash * 33) ^ key.charCodeAt(i);
+  }
+  return (hash &gt;&gt;&gt; 0) % this.capacity;
+}</code></pre>
+            </div>
+          </div>
+
+          <!-- Dynamic Array Card -->
+          <div class="card glass theory-card">
+            <div class="theory-icon icon-blue"><i class="fa-solid fa-layer-group"></i></div>
+            <h2>2. Dynamic Array</h2>
+            <p class="theory-desc">Stores sequential transaction history with continuous memory and index access.</p>
+            
+            <div class="complexity-table">
+              <div class="c-row"><span>Operation</span><span>Time Complexity</span></div>
+              <div class="c-row"><span>Access by Index</span><span class="green">O(1)</span></div>
+              <div class="c-row"><span>Push (Append)</span><span class="green">O(1) Amortized</span></div>
+              <div class="c-row"><span>Insert / Delete</span><span class="amber">O(N) (Shift elements)</span></div>
+              <div class="c-row"><span>Resizing</span><span class="amber">O(N) (Copy to 2x buffer)</span></div>
+            </div>
+
+            <div class="code-snippet">
+<pre><code>// Dynamic Capacity Expansion
+push(element) {
+  if (this.size === this.capacity) {
+    this._resize(this.capacity * 2);
+  }
+  this.buffer[this.size++] = element;
+}</code></pre>
+            </div>
+          </div>
+
+          <!-- Binary Max-Heap Card -->
+          <div class="card glass theory-card">
+            <div class="theory-icon icon-amber"><i class="fa-solid fa-sitemap"></i></div>
+            <h2>3. Binary Max-Heap</h2>
+            <p class="theory-desc">Maintains top expenses priority queue for ultra-fast top-$K$ analytics.</p>
+            
+            <div class="complexity-table">
+              <div class="c-row"><span>Operation</span><span>Time Complexity</span></div>
+              <div class="c-row"><span>Peek Top Expense</span><span class="green">O(1)</span></div>
+              <div class="c-row"><span>Insert Expense</span><span class="green">O(log N)</span></div>
+              <div class="c-row"><span>Extract Max</span><span class="green">O(log N)</span></div>
+              <div class="c-row"><span>Heapify Array</span><span class="green">O(N)</span></div>
+            </div>
+
+            <div class="code-snippet">
+<pre><code>// Heapify Sift-Down Logic
+siftDown(i) {
+  let maxIdx = i;
+  let left = 2 * i + 1, right = 2 * i + 2;
+  if (left &lt; size &amp;&amp; arr[left] &gt; arr[maxIdx]) maxIdx = left;
+  if (right &lt; size &amp;&amp; arr[right] &gt; arr[maxIdx]) maxIdx = right;
+  if (i !== maxIdx) {
+    swap(i, maxIdx);
+    siftDown(maxIdx);
+  }
+}</code></pre>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Add Expense Modal -->
+  <div id="expense-modal" class="modal-overlay hidden">
+    <div class="modal-card glass">
+      <div class="modal-header">
+        <h2 id="modal-title"><i class="fa-solid fa-plus-circle"></i> Add New Expense</h2>
+        <button class="modal-close-btn" id="close-modal-btn">&times;</button>
+      </div>
+      <form id="expense-form">
+        <input type="hidden" id="expense-id">
+        
+        <div class="form-group">
+          <label for="expense-desc">Description / Title *</label>
+          <input type="text" id="expense-desc" class="form-input" placeholder="e.g. Grocery Shopping, AWS Subscription" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="expense-amount">Amount ($) *</label>
+            <input type="number" step="0.01" min="0.01" id="expense-amount" class="form-input" placeholder="0.00" required>
+          </div>
+
+          <div class="form-group">
+            <label for="expense-category">Category *</label>
+            <select id="expense-category" class="form-input" required>
+              <option value="Food & Dining">🍔 Food & Dining</option>
+              <option value="Shopping & Tech">💻 Shopping & Tech</option>
+              <option value="Housing & Rent">🏠 Housing & Rent</option>
+              <option value="Travel & Transit">✈️ Travel & Transit</option>
+              <option value="Entertainment">🍿 Entertainment</option>
+              <option value="Utilities & Bills">⚡ Utilities & Bills</option>
+              <option value="Education & Books">📚 Education & Books</option>
+              <option value="Health & Fitness">💊 Health & Fitness</option>
+              <option value="Other">🏷️ Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="expense-date">Date *</label>
+            <input type="date" id="expense-date" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label for="expense-priority">Priority / Urgency</label>
+            <select id="expense-priority" class="form-input">
+              <option value="Essential">🔴 Essential (Need)</option>
+              <option value="Discretionary">🟡 Discretionary (Want)</option>
+              <option value="Investment">🟢 Savings / Investment</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="expense-notes">Notes / Tags (Optional)</label>
+          <input type="text" id="expense-notes" class="form-input" placeholder="e.g. #campus #groceries">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancel-modal-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-expense-btn">
+            <i class="fa-solid fa-floppy-disk"></i> Save Expense
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/dsa/dynamicArray.js"></script>
+  <script src="js/dsa/hashMap.js"></script>
+  <script src="js/dsa/maxHeap.js"></script>
+  <script src="js/visualization.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
