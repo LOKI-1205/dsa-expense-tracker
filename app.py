@@ -300,9 +300,9 @@ def export_csv():
 
 def main():
     print("=========================================================================")
-    print("🚀 TrackPulse Python Web Application Backend Running")
+    print("TrackPulse Python Web Application Backend Running")
     print("=========================================================================")
-    print("👉 Open http://localhost:5000 in your browser to view the app!")
+    print("Open http://localhost:5000 in your browser to view the app!")
     print("=========================================================================")
     app.run(host='0.0.0.0', port=5000, debug=True)
 
