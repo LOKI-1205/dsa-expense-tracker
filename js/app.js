@@ -26,6 +26,21 @@ function formatINR(amount) {
   });
 }
 
+// Python Backend Sync Helper
+async function syncPythonBackend(endpoint, method = 'POST', data = null) {
+  try {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (data) opts.body = JSON.stringify(data);
+    const res = await fetch(endpoint, opts);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (e) {
+    // Standalone JS mode fallback
+  }
+  return null;
+}
+
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
   initEventListeners();
@@ -569,6 +584,9 @@ function handleExpenseSubmit(e) {
   updateHashMapCategory(category, amount, 'add');
   maxHeap.insert(newExpense);
 
+  // Sync with Python Flask Backend if running
+  syncPythonBackend('/api/add_expense', 'POST', newExpense);
+
   Visualizer.logArrayEvent(`Pushed <strong>${description}</strong> (${formatINR(amount)}) into DynamicArray`, 'push');
 
   syncUI();
@@ -606,6 +624,9 @@ function handleBudgetSubmit(e) {
   if (!isNaN(val) && val >= 0) {
     monthlyBudget = val;
     localStorage.setItem('trackpulse_budget', val.toString());
+
+    // Sync with Python Flask Backend if running
+    syncPythonBackend('/api/set_budget', 'POST', { budget: val });
 
     // Instant direct DOM update
     const displayEl = document.getElementById('budget-display');
